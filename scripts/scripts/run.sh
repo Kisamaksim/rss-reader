@@ -1,0 +1,1 @@
+java -cp rss-reader-1.0-SNAPSHOT.jar maksim.iakidovich.Main

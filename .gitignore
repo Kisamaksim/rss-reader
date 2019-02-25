@@ -1,0 +1,6 @@
+#ignore list
+target/
+*.iml
+.idea/
+feeds/
+config/
