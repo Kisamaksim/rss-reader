@@ -9,13 +9,13 @@ import maksim.iakidovich.rss.ConfigManager;
 import maksim.iakidovich.rss.RssFeedManager;
 
 public class Main {
-    private static ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private static ExecutorService executorService = Executors.newCachedThreadPool();
     private static RssFeedManager rssFeedManager = new RssFeedManager();
     private static ConfigManager configManager = new ConfigManager(rssFeedManager);
-    private static Scanner scanner = new Scanner(System.in);
+    public static Scanner scanner = new Scanner(System.in);
     
     public static void main(String[] args) {
-        configManager.loadRssFeedsFromConfig();
+        executorService.submit(() -> configManager.readConfigFile());
         while(true) {
             System.out.println("Enter the:\n" +
                                "[1] - for Add new RSS Feed\n" +
@@ -24,10 +24,9 @@ public class Main {
                                "[4] - for Change update period for RSS Feed\n" +
                                "[5] - for Change file for RSS Feed\n" +
                                "[6] - for Print parameters of RSS Feed\n" +
-                               "[7] - for Change parameters of RSS Feed\n" +
-                               "[8] - for Change count limit of entities from RSS Feed\n" +
-                               "[9] - for Set RSS Feeds write to shared file\n" +
-                               "[10] - for Release RSS Feeds which write to shared file\n" +
+                               "[7] - for ADD parameters to RSS Feed\n" +
+                               "[8] - for HIDE parameters from RSS Feed\n" +
+                               "[9] - for Change count limit of entities from RSS Feed\n" +
                                "[0] - for Exit");
             int decision = scanner.nextInt();
             scanner.nextLine();
@@ -37,7 +36,7 @@ public class Main {
                 case 1:
                     System.out.println("Enter the URL to RSS Feed: ");
                     String s = scanner.nextLine();
-                    executorService.submit(() -> rssFeedManager.createFeed(s));
+                    rssFeedManager.createFeed(s.trim());
                     break;
                 case 2:
                     rssFeedManager.printFeeds();
@@ -70,21 +69,32 @@ public class Main {
                 case 6:
                     System.out.println("Enter the number of RSS Feed that you want to print parameters:");
                     rssFeedManager.printFeeds();
-                    rssFeedManager.printFeedParameters(scanner.nextInt());
+                    rssFeedManager.printActualRssFeedParameters(scanner.nextInt());
                     scanner.nextLine();
                     break;
                 case 7:
-                    System.out.println("Enter the number of RSS Feed that you want to change parameters:");
+                    System.out.println("Enter the number of RSS Feed that you want to ADD parameters:");
                     rssFeedManager.printFeeds();
                     index = scanner.nextInt();
                     scanner.nextLine();
-                    rssFeedManager.printFeedParameters(index);
                     System.out.println("Enter the numbers of Parameters (like \"1,2,3 etc\") " +
-                                       "which you want to hide in the RSS Feed:");
+                                       "which you want to ADD to the RSS Feed:");
+                    rssFeedManager.printHideRssFeedParameters(index);
                     indexesOfParams = scanner.nextLine().split("\\W+");
-                    rssFeedManager.excludeFeedParameters(index, indexesOfParams);
+                    rssFeedManager.addRssFeedParameters(index, indexesOfParams);
                     break;
                 case 8:
+                    System.out.println("Enter the number of RSS Feed that you want to EXCLUDE parameters:");
+                    rssFeedManager.printFeeds();
+                    index = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.println("Enter the numbers of Parameters (like \"1,2,3 etc\") " +
+                            "which you want to EXCLUDE from the RSS Feed:");
+                    rssFeedManager.printActualRssFeedParameters(index);
+                    indexesOfParams = scanner.nextLine().split("\\W+");
+                    rssFeedManager.excludeRssFeedParameters(index, indexesOfParams);
+                    break;
+                case 9:
                     System.out.println("Enter the number of RSS Feed" +
                                        " which you want to change limit of RSS Feeds elements:");
                     rssFeedManager.printFeeds();
@@ -92,18 +102,6 @@ public class Main {
                     scanner.nextLine();
                     System.out.println("Enter the count limit: ");
                     rssFeedManager.setCountLimitForFeed(index, scanner.nextInt());
-                    scanner.nextLine();
-                    break;
-                case 9:
-                    System.out.println("Enter the number of RSS Feed which you want to write to share file:");
-                    rssFeedManager.printFeeds();
-                    indexesOfParams = scanner.nextLine().split("\\W+");
-                    rssFeedManager.writeToSharedFile(indexesOfParams);
-                    break;
-                case 10:
-                    System.out.println("Enter the number of WriteToShareFile which you want to release:");
-                    rssFeedManager.printWritersToShareFile();
-                    rssFeedManager.removeWriterToSharedFile(scanner.nextInt());
                     scanner.nextLine();
                     break;
                 case 0:

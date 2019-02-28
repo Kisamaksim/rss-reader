@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <language>ru</language>
+    <title>Lenta.ru : Новости</title>
+    <description>Новости, статьи, фотографии, видео. Семь дней в неделю, 24 часа в сутки.</description>
+    <link>https://lenta.ru</link>
+    <image>
+      <url>https://assets.lenta.ru/small_logo.png</url>
+      <title>Lenta.ru</title>
+      <link>https://lenta.ru</link>
+      <width>134</width>
+      <height>22</height>
+    </image>
+    <atom:link rel="self" type="application/rss+xml" href="http://lenta.ru/rss/news"/>
+<item>
+  <title>Полковник Квачков порассуждал о «русской нации» и назвал Кавказ российским</title>
+  <description>
+    <![CDATA[Отставной полковник ГРУ Владимир Квачков в интервью радио «Комсомольская правда» поделился рассуждениями о национализме и любви к соотечественникам. По мнению Квачкова, «русской нацией» являются «великороссы, малороссы, белорусы, все коренные народы России» и «даже в какой-то степени чеченцы».]]>
+  </description>
+  <pubDate>Tue, 26 Feb 2019 22:25:36 +0300</pubDate>
+</item>
+</channel>
+</rss>

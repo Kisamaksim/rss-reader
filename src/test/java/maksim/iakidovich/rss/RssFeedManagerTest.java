@@ -11,10 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import maksim.iakidovich.rss.feedparameters.Author;
-import maksim.iakidovich.rss.feedparameters.Description;
-import maksim.iakidovich.rss.feedparameters.FeedParameter;
-import maksim.iakidovich.rss.feedparameters.Link;
+import maksim.iakidovich.rss.feedparameters.FeedParameters;
 
 class RssFeedManagerTest {
     
@@ -44,7 +41,7 @@ class RssFeedManagerTest {
     }
     
     @Test
-    void changeUpdatePeriod() {
+    void changeUpdatePeriod_ManagerWithOneRssFeedUpdater_ChangeUpdatePeriodOfRssFeedUpdaterWasCalled() {
         RssFeedManager manager = getEmptyManager();
         RssFeedUpdater mockRssFeedUpdater = mock(RssFeedUpdater.class);
         List<RssFeedUpdater> rssFeedUpdaters = manager.getRssFeedUpdaters();
@@ -56,7 +53,7 @@ class RssFeedManagerTest {
     }
     
     @Test
-    void renameFile_ManagerWithOneMockRssFeed_MethodRenameFileInRssFeedWasCalled() {
+    void renameFile_ManagerWithOneMockRssFeed_MethodSetRssFeedFileInRssFeedWasCalled() {
         RssFeedManager manager = getEmptyManager();
         RssFeed mockRssFeed = mock(RssFeed.class);
         List<RssFeed> feeds = manager.getFeeds();
@@ -64,23 +61,7 @@ class RssFeedManagerTest {
         
         manager.renameFile(0, "test");
         
-        verify(mockRssFeed, times(1)).renameFile("test");
-    }
-    
-    @Test
-    void excludeFeedParameters_RssFeedWithThreeFeedParametersList_ExcludedTwoOfThemSizeOfFeedParametersListIsOne() {
-        RssFeedManager manager = getEmptyManager();
-        RssFeed rssFeed = new RssFeed();
-        List<FeedParameter> feedParameters = rssFeed.getFeedParameters();
-        Collections.addAll(feedParameters, new Author(), new Link(), new Description());
-        List<RssFeed> feeds = manager.getFeeds();
-        feeds.add(rssFeed);
-        String[] indexesOfExcludedParams = {"1", "2"};
-        
-        manager.excludeFeedParameters(0, indexesOfExcludedParams);
-        int size = feedParameters.size();
-        
-        Assertions.assertEquals(1, size);
+        verify(mockRssFeed, times(1)).setRssFeedFile("test");
     }
     
     @Test
@@ -94,4 +75,5 @@ class RssFeedManagerTest {
         
         verify(mockRssFeed, times(1)).setCountLimit(10);
     }
+    
 }

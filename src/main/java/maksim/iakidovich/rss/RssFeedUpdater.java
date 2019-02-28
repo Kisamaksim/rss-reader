@@ -19,8 +19,9 @@ public class RssFeedUpdater implements Runnable {
     
     @Override
     public void run() {
-        rssFeed.readFeed();
-        rssFeed.writeFeed();
+        rssFeed.parseRssFeed();
+        rssFeed.sortRssFeedEntries();
+        rssFeed.writeRssFeed();
     }
     
     void shutdown() {

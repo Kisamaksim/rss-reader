@@ -10,11 +10,19 @@
 
     <fileSets>
         <fileSet>
-            <directory>target/</directory>
+            <directory>target</directory>
             <includes>
                 <include>*.jar</include>
             </includes>
-            <outputDirectory>./</outputDirectory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>target/lib</directory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+            <outputDirectory>dependencies</outputDirectory>
         </fileSet>
 
         <fileSet>
@@ -23,7 +31,7 @@
                 <include>*.cmd</include>
                 <include>*.sh</include>
             </includes>
-            <outputDirectory>./</outputDirectory>
+            <outputDirectory>/</outputDirectory>
         </fileSet>
 
         <fileSet>
@@ -31,7 +39,7 @@
             <includes>
                 <include>*</include>
             </includes>
-            <outputDirectory>./config</outputDirectory>
+            <outputDirectory>config</outputDirectory>
         </fileSet>
 
         <fileSet>
