@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -29,8 +31,8 @@ class RssFeedTest {
         rssFeedWithOneItem.parseRssFeed();
         rssFeedWithOneItem.defineRssFeedParameters();
         rssFeedWithOneItem.updateActualRssFeedParameters(new String[]{"0", "1", "2"});
-        rssFeedWithOneItem.setDefaultCountLimit();
-        rssFeedWithOneItem.setInstanceEpochToLastPublishedDate();
+        rssFeedWithOneItem.setDefaultItemsLimit();
+        rssFeedWithOneItem.setLastPublishedDate(Date.from(Instant.EPOCH));
         return rssFeedWithOneItem;
     }
     
@@ -68,7 +70,7 @@ class RssFeedTest {
         rssFeedWithOneItem.parseRssFeed();
         
         rssFeedWithOneItem.defineRssFeedParameters();
-        List<FeedParameters> allRssFeedParameters = rssFeedWithOneItem.getHideRssFeedParameters();
+        List<FeedParameters> allRssFeedParameters = rssFeedWithOneItem.getHideParameters();
         int size = allRssFeedParameters.size();
         
         Assertions.assertEquals(3, size);

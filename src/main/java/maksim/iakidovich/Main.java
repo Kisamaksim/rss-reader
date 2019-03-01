@@ -6,12 +6,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import maksim.iakidovich.rss.ConfigManager;
-import maksim.iakidovich.rss.RssFeedManager;
+import maksim.iakidovich.rss.RssFeedFacade;
 
 public class Main {
     private static ExecutorService executorService = Executors.newCachedThreadPool();
-    private static RssFeedManager rssFeedManager = new RssFeedManager();
-    private static ConfigManager configManager = new ConfigManager(rssFeedManager);
+    private static RssFeedFacade rssFeedFacade = new RssFeedFacade();
+    private static ConfigManager configManager = new ConfigManager(rssFeedFacade);
     public static Scanner scanner = new Scanner(System.in);
     
     public static void main(String[] args) {
@@ -36,72 +36,72 @@ public class Main {
                 case 1:
                     System.out.println("Enter the URL to RSS Feed: ");
                     String s = scanner.nextLine();
-                    rssFeedManager.createFeed(s.trim());
+                    rssFeedFacade.createFeed(s.trim());
                     break;
                 case 2:
-                    rssFeedManager.printFeeds();
+                    rssFeedFacade.printFeeds();
                     break;
                 case 3:
                     System.out.println("Enter the number of RSS Feed that you want to remove:");
-                    rssFeedManager.printFeeds();
-                    rssFeedManager.removeFeed(scanner.nextInt());
+                    rssFeedFacade.printFeeds();
+                    rssFeedFacade.removeFeed(scanner.nextInt());
                     scanner.nextLine();
                     break;
                 case 4:
                     System.out.println("Enter the number of RSS Feed that you want to change update period:");
-                    rssFeedManager.printFeeds();
+                    rssFeedFacade.printFeeds();
                     index = scanner.nextInt();
                     scanner.nextLine();
                     System.out.println("Enter the new period in SECONDS");
                     long period = scanner.nextLong();
                     scanner.nextLine();
-                    rssFeedManager.changeUpdatePeriod(index, period, TimeUnit.SECONDS);
+                    rssFeedFacade.changeUpdatePeriod(index, period, TimeUnit.SECONDS);
                     break;
                 case 5:
                     System.out.println("Enter the number of RSS Feed that you want to rename file:");
-                    rssFeedManager.printFeeds();
+                    rssFeedFacade.printFeeds();
                     index = scanner.nextInt();
                     scanner.nextLine();
                     System.out.println("Enter the new file name:");
                     String fileName = scanner.nextLine();
-                    rssFeedManager.renameFile(index, fileName);
+                    rssFeedFacade.renameFile(index, fileName);
                     break;
                 case 6:
                     System.out.println("Enter the number of RSS Feed that you want to print parameters:");
-                    rssFeedManager.printFeeds();
-                    rssFeedManager.printActualRssFeedParameters(scanner.nextInt());
+                    rssFeedFacade.printFeeds();
+                    rssFeedFacade.printActualRssFeedParameters(scanner.nextInt());
                     scanner.nextLine();
                     break;
                 case 7:
                     System.out.println("Enter the number of RSS Feed that you want to ADD parameters:");
-                    rssFeedManager.printFeeds();
+                    rssFeedFacade.printFeeds();
                     index = scanner.nextInt();
                     scanner.nextLine();
                     System.out.println("Enter the numbers of Parameters (like \"1,2,3 etc\") " +
                                        "which you want to ADD to the RSS Feed:");
-                    rssFeedManager.printHideRssFeedParameters(index);
+                    rssFeedFacade.printHideRssFeedParameters(index);
                     indexesOfParams = scanner.nextLine().split("\\W+");
-                    rssFeedManager.addRssFeedParameters(index, indexesOfParams);
+                    rssFeedFacade.addRssFeedParameters(index, indexesOfParams);
                     break;
                 case 8:
                     System.out.println("Enter the number of RSS Feed that you want to EXCLUDE parameters:");
-                    rssFeedManager.printFeeds();
+                    rssFeedFacade.printFeeds();
                     index = scanner.nextInt();
                     scanner.nextLine();
                     System.out.println("Enter the numbers of Parameters (like \"1,2,3 etc\") " +
                             "which you want to EXCLUDE from the RSS Feed:");
-                    rssFeedManager.printActualRssFeedParameters(index);
+                    rssFeedFacade.printActualRssFeedParameters(index);
                     indexesOfParams = scanner.nextLine().split("\\W+");
-                    rssFeedManager.excludeRssFeedParameters(index, indexesOfParams);
+                    rssFeedFacade.excludeRssFeedParameters(index, indexesOfParams);
                     break;
                 case 9:
                     System.out.println("Enter the number of RSS Feed" +
                                        " which you want to change limit of RSS Feeds elements:");
-                    rssFeedManager.printFeeds();
+                    rssFeedFacade.printFeeds();
                     index = scanner.nextInt();
                     scanner.nextLine();
                     System.out.println("Enter the count limit: ");
-                    rssFeedManager.setCountLimitForFeed(index, scanner.nextInt());
+                    rssFeedFacade.setItemsLimitForFeed(index, scanner.nextInt());
                     scanner.nextLine();
                     break;
                 case 0:

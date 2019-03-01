@@ -4,33 +4,30 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import maksim.iakidovich.rss.feedparameters.FeedParameters;
-
-class RssFeedManagerTest {
+class RssFeedFacadeTest {
     
-    private RssFeedManager getManagerWithOneRssFeedAndAssociatedRssFeedUpdater() {
-        RssFeedManager rssFeedManager = new RssFeedManager();
-        List<RssFeed> feeds = rssFeedManager.getFeeds();
+    private RssFeedFacade getFacadeWithOneRssFeedAndAssociatedRssFeedUpdater() {
+        RssFeedFacade rssFeedFacade = new RssFeedFacade();
+        List<RssFeed> feeds = rssFeedFacade.getFeeds();
         feeds.add(new RssFeed());
-        List<RssFeedUpdater> rssFeedUpdaters = rssFeedManager.getRssFeedUpdaters();
+        List<RssFeedUpdater> rssFeedUpdaters = rssFeedFacade.getRssFeedUpdaters();
         rssFeedUpdaters.add(new RssFeedUpdater());
-        return rssFeedManager;
+        return rssFeedFacade;
     }
     
-    private RssFeedManager getEmptyManager() {
-        return new RssFeedManager();
+    private RssFeedFacade getEmptyFacade() {
+        return new RssFeedFacade();
     }
     
     @Test
-    void removeFeed_ManagerWithOneRssFeedAndRssFeedUpdaters_ManagerFieldsFeedsAndRssFeedUpdatersIsEmpty() {
-        RssFeedManager manager = getManagerWithOneRssFeedAndAssociatedRssFeedUpdater();
+    void removeFeed_FacadeWithOneRssFeedAndRssFeedUpdaters_FacadeFieldsFeedsAndRssFeedUpdatersIsEmpty() {
+        RssFeedFacade manager = getFacadeWithOneRssFeedAndAssociatedRssFeedUpdater();
         
         manager.removeFeed(0);
         List<RssFeed> feeds = manager.getFeeds();
@@ -41,8 +38,8 @@ class RssFeedManagerTest {
     }
     
     @Test
-    void changeUpdatePeriod_ManagerWithOneRssFeedUpdater_ChangeUpdatePeriodOfRssFeedUpdaterWasCalled() {
-        RssFeedManager manager = getEmptyManager();
+    void changeUpdatePeriod_FacadeWithOneRssFeedUpdater_ChangeUpdatePeriodOfRssFeedUpdaterWasCalled() {
+        RssFeedFacade manager = getEmptyFacade();
         RssFeedUpdater mockRssFeedUpdater = mock(RssFeedUpdater.class);
         List<RssFeedUpdater> rssFeedUpdaters = manager.getRssFeedUpdaters();
         rssFeedUpdaters.add(mockRssFeedUpdater);
@@ -53,8 +50,8 @@ class RssFeedManagerTest {
     }
     
     @Test
-    void renameFile_ManagerWithOneMockRssFeed_MethodSetRssFeedFileInRssFeedWasCalled() {
-        RssFeedManager manager = getEmptyManager();
+    void renameFile_FacadeWithOneRssFeed_MethodSetRssFeedFileInRssFeedWasCalled() {
+        RssFeedFacade manager = getEmptyFacade();
         RssFeed mockRssFeed = mock(RssFeed.class);
         List<RssFeed> feeds = manager.getFeeds();
         feeds.add(mockRssFeed);
@@ -65,15 +62,15 @@ class RssFeedManagerTest {
     }
     
     @Test
-    void setCountLimitForFeed_ManagerWithOneMockRssFeed_MethodSetCountLimitInRssFeedWasCalled() {
-        RssFeedManager manager = getEmptyManager();
+    void setItemsLimitForFeed_FacadeWithOneRssFeed_MethodSetItemsLimitInRssFeedWasCalled() {
+        RssFeedFacade manager = getEmptyFacade();
         RssFeed mockRssFeed = mock(RssFeed.class);
         List<RssFeed> feeds = manager.getFeeds();
         feeds.add(mockRssFeed);
         
-        manager.setCountLimitForFeed(0, 10);
+        manager.setItemsLimitForFeed(0, 10);
         
-        verify(mockRssFeed, times(1)).setCountLimit(10);
+        verify(mockRssFeed, times(1)).setItemsLimit(10);
     }
     
 }

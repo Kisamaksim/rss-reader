@@ -11,85 +11,85 @@ import com.sun.syndication.feed.synd.SyndEntryImpl;
 public enum FeedParameters {
     TITLE {
         @Override
-        public void write(FileWriter fileWriter, SyndEntryImpl syndEntry) throws IOException {
-            fileWriter.write("Title: " + syndEntry.getTitle() + System.lineSeparator());
+        public void write(FileWriter fileWriter, SyndEntryImpl item) throws IOException {
+            fileWriter.write("Title: " + item.getTitle() + System.lineSeparator());
         }
     
         @Override
-        public boolean isPresent(SyndEntryImpl syndEntry) {
-            return syndEntry.getTitle() != null;
+        public boolean isPresent(SyndEntryImpl item) {
+            return item.getTitle() != null;
         }
     },
     AUTHOR {
         @Override
-        public void write(FileWriter fileWriter, SyndEntryImpl syndEntry) throws IOException {
-            fileWriter.write("Author: " + syndEntry.getAuthor() + System.lineSeparator());
+        public void write(FileWriter fileWriter, SyndEntryImpl item) throws IOException {
+            fileWriter.write("Author: " + item.getAuthor() + System.lineSeparator());
         }
     
         @Override
-        public boolean isPresent(SyndEntryImpl syndEntry) {
-            return !syndEntry.getAuthor().isEmpty();
+        public boolean isPresent(SyndEntryImpl item) {
+            return !item.getAuthor().isEmpty();
         }
     },
     DESCRIPTION {
         @Override
-        public void write(FileWriter fileWriter, SyndEntryImpl syndEntry) throws IOException {
-            fileWriter.write("Description: " + syndEntry.getDescription().getValue().trim() + System.lineSeparator());
+        public void write(FileWriter fileWriter, SyndEntryImpl item) throws IOException {
+            fileWriter.write("Description: " + item.getDescription().getValue().trim() + System.lineSeparator());
         }
     
         @Override
-        public boolean isPresent(SyndEntryImpl syndEntry) {
-            return syndEntry.getDescription() != null;
+        public boolean isPresent(SyndEntryImpl item) {
+            return item.getDescription() != null;
         }
     },
     PUBLISHED_DATE {
         @Override
-        public void write(FileWriter fileWriter, SyndEntryImpl syndEntry) throws IOException {
-            fileWriter.write("Published Date: " + syndEntry.getPublishedDate() + System.lineSeparator());
+        public void write(FileWriter fileWriter, SyndEntryImpl item) throws IOException {
+            fileWriter.write("Published Date: " + item.getPublishedDate() + System.lineSeparator());
         }
     
         @Override
-        public boolean isPresent(SyndEntryImpl syndEntry) {
-            return syndEntry.getPublishedDate() != null;
+        public boolean isPresent(SyndEntryImpl item) {
+            return item.getPublishedDate() != null;
         }
     },
     LINK {
         @Override
-        public void write(FileWriter fileWriter, SyndEntryImpl syndEntry) throws IOException {
-            fileWriter.write("Link: " + syndEntry.getLink() + System.lineSeparator());
+        public void write(FileWriter fileWriter, SyndEntryImpl item) throws IOException {
+            fileWriter.write("Link: " + item.getLink() + System.lineSeparator());
         }
     
         @Override
-        public boolean isPresent(SyndEntryImpl syndEntry) {
-            return syndEntry.getLink() != null;
+        public boolean isPresent(SyndEntryImpl item) {
+            return item.getLink() != null;
         }
     },
     SOURCE {
         @Override
-        public void write(FileWriter fileWriter, SyndEntryImpl syndEntry) throws IOException {
-            fileWriter.write("Source: " + syndEntry.getSource() + System.lineSeparator());
+        public void write(FileWriter fileWriter, SyndEntryImpl item) throws IOException {
+            fileWriter.write("Source: " + item.getSource() + System.lineSeparator());
         }
     
         @Override
-        public boolean isPresent(SyndEntryImpl syndEntry) {
-            return syndEntry.getSource() != null;
+        public boolean isPresent(SyndEntryImpl item) {
+            return item.getSource() != null;
         }
     },
     GUID {
         @Override
-        public void write(FileWriter fileWriter, SyndEntryImpl syndEntry) throws IOException {
-            fileWriter.write("GUID: " + syndEntry.getUri() + System.lineSeparator());
+        public void write(FileWriter fileWriter, SyndEntryImpl item) throws IOException {
+            fileWriter.write("GUID: " + item.getUri() + System.lineSeparator());
         }
     
         @Override
-        public boolean isPresent(SyndEntryImpl syndEntry) {
-            return syndEntry.getUri() != null;
+        public boolean isPresent(SyndEntryImpl item) {
+            return item.getUri() != null;
         }
     },
     ENCLOSURES {
         @Override
-        public void write(FileWriter fileWriter, SyndEntryImpl syndEntry) throws IOException {
-            @SuppressWarnings("unchecked") List<SyndEnclosureImpl> enclosures = syndEntry.getEnclosures();
+        public void write(FileWriter fileWriter, SyndEntryImpl item) throws IOException {
+            @SuppressWarnings("unchecked") List<SyndEnclosureImpl> enclosures = item.getEnclosures();
             fileWriter.write("Enclosures:\n");
             for (SyndEnclosureImpl enclosure : enclosures) {
                 fileWriter.write("url: " + enclosure.getUrl() + " | type:" + enclosure.getType() + System.lineSeparator());
@@ -97,14 +97,14 @@ public enum FeedParameters {
         }
     
         @Override
-        public boolean isPresent(SyndEntryImpl syndEntry) {
-            return !syndEntry.getEnclosures().isEmpty();
+        public boolean isPresent(SyndEntryImpl item) {
+            return !item.getEnclosures().isEmpty();
         }
     },
     CATEGORIES {
         @Override
-        public void write(FileWriter fileWriter, SyndEntryImpl syndEntry) throws IOException {
-            @SuppressWarnings("unchecked") List<SyndCategoryImpl> categories = syndEntry.getCategories();
+        public void write(FileWriter fileWriter, SyndEntryImpl item) throws IOException {
+            @SuppressWarnings("unchecked") List<SyndCategoryImpl> categories = item.getCategories();
             fileWriter.write("Categories:" + System.lineSeparator());
             for (SyndCategoryImpl category : categories) {
                 fileWriter.write("name: " + category.getName() + System.lineSeparator());
@@ -112,11 +112,11 @@ public enum FeedParameters {
         }
     
         @Override
-        public boolean isPresent(SyndEntryImpl syndEntry) {
-            return !syndEntry.getCategories().isEmpty();
+        public boolean isPresent(SyndEntryImpl item) {
+            return !item.getCategories().isEmpty();
         }
     };
     
-    public abstract void write(FileWriter fileWriter, SyndEntryImpl syndEntry) throws IOException;
-    public abstract boolean isPresent(SyndEntryImpl syndEntry);
+    public abstract void write(FileWriter fileWriter, SyndEntryImpl item) throws IOException;
+    public abstract boolean isPresent(SyndEntryImpl item);
 }

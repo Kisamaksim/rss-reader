@@ -21,10 +21,10 @@ import maksim.iakidovich.rss.feedparameters.FeedParameters;
 public class RssFeed {
     private String feedUrl;
     private File feedFile;
-    private int countLimit;
-    private List<SyndEntryImpl> entries;
-    private List<FeedParameters> hideRssFeedParameters = new ArrayList<>();
-    private List<FeedParameters> actualRssFeedParameters = new ArrayList<>();
+    private int itemsLimit;
+    private List<SyndEntryImpl> rssItems;
+    private List<FeedParameters> hideParameters = new ArrayList<>();
+    private List<FeedParameters> actualParameters = new ArrayList<>();
     private Date lastPublishedDate = Date.from(Instant.now());
     
     RssFeed() {
@@ -33,6 +33,11 @@ public class RssFeed {
     
     RssFeed(String feedUrl) {
         this.feedUrl = feedUrl;
+    }
+    
+    @Override
+    public String toString() {
+        return "RssFeed from: " + feedUrl +  " is written to file: " + feedFile.getName();
     }
     
     /**
@@ -45,9 +50,9 @@ public class RssFeed {
             SyndFeedInput syndFeedInput = new SyndFeedInput();
             SyndFeed build = syndFeedInput.build(new XmlReader(new URL(feedUrl)));
             @SuppressWarnings("unchecked")
-            List<SyndEntryImpl> entries = build.getEntries();
-            if (!entries.isEmpty()) {
-                this.entries = entries;
+            List<SyndEntryImpl> rssItems = build.getEntries();
+            if (!rssItems.isEmpty()) {
+                this.rssItems = rssItems;
                 return true;
             } else {
                 System.out.println("RSS Feed from " + feedUrl + " is empty. Can't accept this.");
@@ -65,7 +70,7 @@ public class RssFeed {
     }
     
     boolean isPubDatePresent() {
-        SyndEntryImpl syndEntry = entries.get(0);
+        SyndEntryImpl syndEntry = rssItems.get(0);
         if (syndEntry.getPublishedDate() != null) {
             return true;
         } else {
@@ -75,10 +80,10 @@ public class RssFeed {
     }
     
     void defineRssFeedParameters() {
-        SyndEntryImpl syndEntry = entries.get(0);
+        SyndEntryImpl syndEntry = rssItems.get(0);
         for (FeedParameters param : FeedParameters.values()) {
             if (param.isPresent(syndEntry)) {
-                hideRssFeedParameters.add(param);
+                hideParameters.add(param);
             }
         }
     }
@@ -86,18 +91,18 @@ public class RssFeed {
     void updateActualRssFeedParameters(String[] indexes) {
         for (String indexOfParameter : indexes) {
             int i = Integer.parseInt(indexOfParameter);
-            actualRssFeedParameters.add(hideRssFeedParameters.get(i));
+            actualParameters.add(hideParameters.get(i));
         }
-        hideRssFeedParameters.removeAll(actualRssFeedParameters);
+        hideParameters.removeAll(actualParameters);
     }
     
-    void setCountLimit(int countLimit) {
-        if (countLimit > entries.size()) {
-            System.out.println("===countLimit can't be > than count of entries in Feed\n" +
-                    "count of entries: " + entries.size() + " ===");
+    void setItemsLimit(int itemsLimit) {
+        if (itemsLimit > rssItems.size()) {
+            System.out.println("===itemsLimit can't be > than count of rssItems in Feed\n" +
+                    "count of rssItems: " + rssItems.size() + " ===");
             return;
         }
-        this.countLimit = countLimit;
+        this.itemsLimit = itemsLimit;
     }
     
     void setRssFeedFile() {
@@ -116,8 +121,8 @@ public class RssFeed {
     }
     
     void sortRssFeedEntries() {
-        entries.sort(Comparator.comparing(SyndEntryImpl::getPublishedDate));
-        Collections.reverse(entries);
+        rssItems.sort(Comparator.comparing(SyndEntryImpl::getPublishedDate));
+        Collections.reverse(rssItems);
     }
     
     synchronized void writeRssFeed() {
@@ -126,11 +131,11 @@ public class RssFeed {
     
     synchronized void writeRssFeed(File feedFile, boolean append) {
         try (FileWriter fileWriter = new FileWriter(feedFile, append)) {
-            for (int i = 0; i < countLimit; i++) {
-                SyndEntryImpl entry = entries.get(i);
-                if (lastPublishedDate.compareTo(entry.getPublishedDate()) < 0) {
-                    for (FeedParameters param : actualRssFeedParameters) {
-                        param.write(fileWriter, entry);
+            for (int i = 0; i < itemsLimit; i++) {
+                SyndEntryImpl item = rssItems.get(i);
+                if (lastPublishedDate.compareTo(item.getPublishedDate()) < 0) {
+                    for (FeedParameters param : actualParameters) {
+                        param.write(fileWriter, item);
                     }
                     fileWriter.write("-----" + System.lineSeparator());
                 }
@@ -142,65 +147,56 @@ public class RssFeed {
     }
     
     private void setLastPublishedDate() {
-        SyndEntryImpl syndEntry = entries.get(0);
-        lastPublishedDate = syndEntry.getPublishedDate();
-    }
-    
-    @Override
-    public String toString() {
-        return "RssFeed from: " + feedUrl +  " is written to file: " + feedFile.getName();
+        SyndEntryImpl item = rssItems.get(0);
+        lastPublishedDate = item.getPublishedDate();
     }
     
     void printHideRssFeedParameters() {
-        for (int i = 0; i < hideRssFeedParameters.size(); i++) {
-            System.out.println("[" + i +"] - " + hideRssFeedParameters.get(i));
+        for (int i = 0; i < hideParameters.size(); i++) {
+            System.out.println("[" + i +"] - " + hideParameters.get(i));
         }
     }
     
     void printActualRssFeedParameters() {
-        for (int i = 0; i < actualRssFeedParameters.size(); i++) {
-            System.out.println("[" + i +"] - " + actualRssFeedParameters.get(i));
+        for (int i = 0; i < actualParameters.size(); i++) {
+            System.out.println("[" + i +"] - " + actualParameters.get(i));
         }
     }
     
     void updateHideRssFeedParameters(String[] indexes) {
         for (String indexOfParameter : indexes) {
             int i = Integer.parseInt(indexOfParameter);
-            hideRssFeedParameters.add(actualRssFeedParameters.get(i));
+            hideParameters.add(actualParameters.get(i));
         }
-        actualRssFeedParameters.removeAll(hideRssFeedParameters);
+        actualParameters.removeAll(hideParameters);
     }
     
     String getFeedUrl() {
         return feedUrl;
     }
     
-    List<FeedParameters> getHideRssFeedParameters() {
-        return hideRssFeedParameters;
+    List<FeedParameters> getHideParameters() {
+        return hideParameters;
     }
     
-    void setInstanceEpochToLastPublishedDate() {
-        lastPublishedDate = Date.from(Instant.EPOCH);
-    }
-    
-    void setDefaultCountLimit() {
-        countLimit = entries.size();
+    void setDefaultItemsLimit() {
+        itemsLimit = rssItems.size();
     }
     
     void setLastPublishedDate(Date lastPublishedDate) {
         this.lastPublishedDate = lastPublishedDate;
     }
     
-    int getCountLimit() {
-        return countLimit;
+    int getItemsLimit() {
+        return itemsLimit;
     }
     
     Date getLastPublishedDate() {
         return lastPublishedDate;
     }
     
-    List<FeedParameters> getActualRssFeedParameters() {
-        return actualRssFeedParameters;
+    List<FeedParameters> getActualParameters() {
+        return actualParameters;
     }
     
     File getFeedFile() {

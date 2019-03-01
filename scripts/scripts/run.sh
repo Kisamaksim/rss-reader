@@ -1,1 +1,1 @@
-java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -cp rss-reader-1.0-SNAPSHOT.jar:dependencies/* maksim.iakidovich.Main
+java -cp rss-reader-1.0-SNAPSHOT.jar:dependencies/* maksim.iakidovich.Main

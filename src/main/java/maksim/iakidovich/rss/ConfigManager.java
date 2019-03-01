@@ -10,24 +10,21 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-
-import maksim.iakidovich.rss.feedparameters.FeedParameters;
 
 /**
  * Class is intended to load and store Rss Feeds from star.properties file.
  */
 public class ConfigManager {
     private static final String COORDINATES_CONFIG_FILE = "config/start.properties";
-    private RssFeedManager rssFeedManager;
+    private RssFeedFacade rssFeedFacade;
     private DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
     
     ConfigManager() {
     }
     
-    public ConfigManager(RssFeedManager currentManager) {
-        this.rssFeedManager = currentManager;
+    public ConfigManager(RssFeedFacade currentManager) {
+        this.rssFeedFacade = currentManager;
     }
     
     /**
@@ -49,21 +46,21 @@ public class ConfigManager {
     }
     
     private void parseConfigLine(String configLine) {
-        String[] splitConfigLine = configLine.split("\\|");
-        String rssFeedUrl = splitConfigLine[0];
-        Date lastPublishedDate = null;
+        String[] configLines = configLine.split("\\|");
+        String rssFeedUrl = configLines[0];
+        Date lastPublishedDate;
         try {
-            lastPublishedDate = dateFormat.parse(splitConfigLine[1]);
+            lastPublishedDate = dateFormat.parse(configLines[1]);
         } catch (ParseException ignored) {
             lastPublishedDate = Date.from(Instant.now());
         }
-        String[] parameters = splitConfigLine[2].split("\\W+");
-        int countLimit = Integer.parseInt(splitConfigLine[3]);
-        createRssFeed(rssFeedUrl, lastPublishedDate, parameters, countLimit);
+        String[] parameters = configLines[2].split("\\W+");
+        int itemsLimit = Integer.parseInt(configLines[3]);
+        createRssFeed(rssFeedUrl, lastPublishedDate, parameters, itemsLimit);
     }
     
-    private void createRssFeed(String rssFeedUrl, Date lastPublishedDate, String[] parameters, int countLimit) {
-        rssFeedManager.createFeedFromConfig(rssFeedUrl, lastPublishedDate, parameters, countLimit);
+    private void createRssFeed(String rssFeedUrl, Date lastPublishedDate, String[] parameters, int itemsLimit) {
+        rssFeedFacade.createFeedFromConfig(rssFeedUrl, lastPublishedDate, parameters, itemsLimit);
     }
     
     /**
@@ -75,13 +72,13 @@ public class ConfigManager {
     
     private void storeRssFeedsToConfig(String coordinatesFile) {
         try (FileWriter fileWriter = new FileWriter(coordinatesFile)) {
-            for (RssFeed feed : rssFeedManager.getFeeds()) {
+            for (RssFeed feed : rssFeedFacade.getFeeds()) {
                 String feedUrl = feed.getFeedUrl();
-                String lastPublishedDate = feed.getLastPublishedDate().toString();
-                String parameters = feed.getActualRssFeedParameters().toString();
-                int countLimit = feed.getCountLimit();
+                Date lastPublishedDate = feed.getLastPublishedDate();
+                String parameters = feed.getActualParameters().toString();
+                int itemsLimit = feed.getItemsLimit();
                 fileWriter.write(feedUrl + "|" + lastPublishedDate + "|" +
-                                 parameters.substring(1, parameters.length()-1) + "|" + countLimit +
+                                 parameters.substring(1, parameters.length()-1) + "|" + itemsLimit +
                                  System.lineSeparator());
             }
         } catch (IOException ex) {
@@ -90,7 +87,7 @@ public class ConfigManager {
         }
     }
     
-    void setRssFeedManager(RssFeedManager rssFeedManager) {
-        this.rssFeedManager = rssFeedManager;
+    void setRssFeedFacade(RssFeedFacade rssFeedFacade) {
+        this.rssFeedFacade = rssFeedFacade;
     }
 }

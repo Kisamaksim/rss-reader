@@ -27,8 +27,8 @@ class ConfigManagerTest {
     @Test
     void loadRssFeedsFromConfig_ConfigWithOneLine_MethodCreateFeedFromConfigWithRightArgumentsWasCalled() throws ParseException {
         ConfigManager configManager = getConfigManager();
-        RssFeedManager mockRssFeedManager = mock(RssFeedManager.class);
-        configManager.setRssFeedManager(mockRssFeedManager);
+        RssFeedFacade mockRssFeedFacade = mock(RssFeedFacade.class);
+        configManager.setRssFeedFacade(mockRssFeedFacade);
         
         configManager.readConfigFile(coordinatesFile);
         String url = "http://www.cnbc.com/id/19789731/device/rss/rss.xml";
@@ -36,7 +36,7 @@ class ConfigManagerTest {
         String[] params = {"AUTHOR", "LINK"};
         int countLimit = 4;
         
-        verify(mockRssFeedManager, times(1)).createFeedFromConfig(url, date, params, countLimit);
+        verify(mockRssFeedFacade, times(1)).createFeedFromConfig(url, date, params, countLimit);
     }
     
     

@@ -15,7 +15,7 @@ import maksim.iakidovich.rss.feedparameters.FeedParameters;
  * This class is intended to manage Rss Feeds.
  * @author Maksim Iakidovich
  */
-public class RssFeedManager {
+public class RssFeedFacade {
     private List<RssFeed> feeds = new CopyOnWriteArrayList<>();
     private List<RssFeedUpdater> rssFeedUpdaters = new CopyOnWriteArrayList<>();
     
@@ -39,7 +39,7 @@ public class RssFeedManager {
         String indexesOfParams = scanner.nextLine();
         rssFeed.updateActualRssFeedParameters(indexesOfParams.split("\\W+"));
         System.out.println("Enter the number of <items> tou want to read from RSS Feed:");
-        rssFeed.setCountLimit(scanner.nextInt());
+        rssFeed.setItemsLimit(scanner.nextInt());
         scanner.nextLine();
         rssFeed.setRssFeedFile();
         feeds.add(rssFeed);
@@ -127,13 +127,13 @@ public class RssFeedManager {
     }
     
     /**
-     * Set the count of entity from RssFeed that will be recorded to {@link RssFeed#feedFile}.
+     * Set the count of items from RssFeed that will be recorded to {@link RssFeed#feedFile}.
      * @param index of RssFeed
-     * @param count of RssFeed entity that will be written to file
+     * @param count of RssFeed items that will be written to file
      */
-    public void setCountLimitForFeed(int index, int count) {
+    public void setItemsLimitForFeed(int index, int count) {
         RssFeed rssFeed = feeds.get(index);
-        rssFeed.setCountLimit(count);
+        rssFeed.setItemsLimit(count);
     }
     
     /**
@@ -153,27 +153,19 @@ public class RssFeedManager {
         return rssFeedUpdaters;
     }
     
-    List<File> getFeedsFiles() {
-        List<File> feedsFiles = new ArrayList<>();
-        for (RssFeed feed : feeds) {
-            feedsFiles.add(feed.getFeedFile());
-        }
-        return feedsFiles;
-    }
-    
-    void createFeedFromConfig(String rssFeedUrl, Date lastPublishedDate, String[] parameters, int countLimit) {
+    void createFeedFromConfig(String rssFeedUrl, Date lastPublishedDate, String[] parameters, int itemsLimit) {
         RssFeed rssFeed = new RssFeed(rssFeedUrl);
         rssFeed.setLastPublishedDate(lastPublishedDate);
         rssFeed.parseRssFeed();
         rssFeed.defineRssFeedParameters();
-        List<FeedParameters> actualRssFeedParameters = rssFeed.getActualRssFeedParameters();
+        List<FeedParameters> actualRssFeedParameters = rssFeed.getActualParameters();
         for (String param : parameters) {
             actualRssFeedParameters.add(FeedParameters.valueOf(param));
         }
-        List<FeedParameters> hideRssFeedParameters = rssFeed.getHideRssFeedParameters();
+        List<FeedParameters> hideRssFeedParameters = rssFeed.getHideParameters();
         hideRssFeedParameters.removeAll(actualRssFeedParameters);
         rssFeed.setRssFeedFile();
-        rssFeed.setCountLimit(countLimit);
+        rssFeed.setItemsLimit(itemsLimit);
         feeds.add(rssFeed);
         createFeedUpdater(rssFeed);
     }
